@@ -23,10 +23,32 @@ apiClient.interceptors.request.use(
     }
 )
 
-const checkResponseStatus = (e) => {
-    const responseStatus = e?.response.status
-
-    if(responseStatus){
-        (responseStatus === 401 || responseStatus === 403) && logout()
+export const registerUser = async (data) => {
+    try {
+        const response = await apiClient.post('/users/register', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
     }
 }
+
+export const loginUser = async (data) => {
+    try {
+        const response = await apiClient.post('/users/login', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+const checkResponseStatus = (e) => {
+    const responseStatus = e?.response?.status;
+
+    if (responseStatus) {
+        (responseStatus === 401 || responseStatus === 403) && logout();
+    } else {
+        console.warn("No se recibió una respuesta del servidor:", e.message);
+    }
+};
