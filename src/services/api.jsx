@@ -9,11 +9,10 @@ const apiClient  = axios.create({
 
 apiClient.interceptors.request.use(
     (config) => {
-        const useUserDetails  = localStorage.getItem('user')
+        const token  = localStorage.getItem('token')
 
-        if(useUserDetails ) {
-            const token = JSON.parse(useUserDetails).token
-            config.headers.Authorization = `Bearer ${token}`
+        if(token ) {
+            config.headers["x-token"] = token;
         }
 
         return  config
@@ -43,6 +42,10 @@ export const loginUser = async (data) => {
     }
 }
 
+
+
+
+
 const checkResponseStatus = (e) => {
     const responseStatus = e?.response?.status;
 
@@ -50,5 +53,8 @@ const checkResponseStatus = (e) => {
         (responseStatus === 401 || responseStatus === 403) && logout();
     } else {
         console.warn("No se recibió una respuesta del servidor:", e.message);
+        console.error(e);
     }
 };
+
+

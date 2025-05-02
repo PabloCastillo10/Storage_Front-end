@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, {  useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import "./Login.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Alert from "@mui/material/Alert";
-import { loginUser } from "../services/api";
+import { useLogin } from "../shared/hooks/useLogin";
+
 
 export default function Login() {
   const {
@@ -13,22 +14,7 @@ export default function Login() {
     formState: { errors }
   } = useForm();
   
-  const navigate = useNavigate(); 
-  const [loginError, setLoginError] = useState(""); 
-
-  const onSubmit = async (data) => {
-    try {
-      await loginUser(data)
-      navigate("/dashboard", { state: { message: "Inicio de sesión exitoso" } });
-    } catch (error) {
-      const errorMsg = error.response?.data?.message || "Email o contraseña incorrecta";
-      setLoginError(errorMsg);
-
-      setTimeout(() => {
-        setLoginError("");
-      }, 10000);
-    }
-  };
+  const { handleLogin, loginError } = useLogin();
 
   const location = useLocation();
   const message = location.state?.message;
@@ -66,7 +52,7 @@ export default function Login() {
         </Alert>
 )}
         
-        <form className="px-2 py-2" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form className="px-2 py-2" onSubmit={handleSubmit(handleLogin)} noValidate>
           <h3 className="text-center mb-4">Sign In</h3>
 
           <div className="mb-3">

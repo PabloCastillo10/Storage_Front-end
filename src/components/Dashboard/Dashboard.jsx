@@ -8,6 +8,11 @@ import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
+import { logout as logoutHandler } from '../../shared/hooks/useLogout';
+import { useClients } from '../../shared/hooks/useDashboard';
+
+
+
 import {
   AppBar,
   Toolbar,
@@ -26,15 +31,16 @@ import {
 } from '@mui/material';
 
 export default function Dashboard() {
-  const navigate = useNavigate();
   const location = useLocation();
   const [showAlert, setShowAlert] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { clients, handleClients } = useClients();
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
-  };
+  
+
+
+
+
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
@@ -47,11 +53,16 @@ export default function Dashboard() {
     }
   }, [location.state]);
 
+  const handleLogout = () => {
+    logoutHandler()
+    navigate('/')
+  }
+
   const sections = [
-    { text: 'Gestión de Inventario', icon: <Inventory2OutlinedIcon /> },
+    { text: 'Gestión de Inventario', icon: <Inventory2OutlinedIcon  /> },
     { text: 'Entradas de Productos', icon: <MoveToInboxOutlinedIcon /> },
     { text: 'Salidas de Productos', icon: <OutboxOutlinedIcon /> },
-    { text: 'Proveedores y Clientes', icon: <GroupsOutlinedIcon /> },
+    { text: 'Proveedores y Clientes', icon: <GroupsOutlinedIcon  onClick={handleClients}  />, onClick: handleClients },
     { text: 'Informes y Estadísticas', icon: <BarChartOutlinedIcon /> },
     { text: 'Notificaciones y Alertas', icon: <NotificationsActiveOutlinedIcon /> },
   ];
@@ -76,10 +87,16 @@ export default function Dashboard() {
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer}>
           <List>
             {sections.map((section, index) => (
-              <ListItem button key={index}>
-                <ListItemIcon>{section.icon}</ListItemIcon>
-                <ListItemText primary={section.text} />
-              </ListItem>
+              <ListItem 
+              key={index} 
+              button="true" 
+              onClick={section.onClick} 
+              component="div"
+              sx={{ cursor: 'pointer' }}
+            >
+              <ListItemIcon>{section.icon}</ListItemIcon>
+              <ListItemText primary={section.text} />
+            </ListItem>
             ))}
           </List>
           <Divider />
