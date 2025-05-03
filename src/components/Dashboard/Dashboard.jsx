@@ -10,6 +10,7 @@ import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsAc
 import MenuIcon from '@mui/icons-material/Menu';
 import { logout as logoutHandler } from '../../shared/hooks/useLogout';
 import { useClients } from '../../shared/hooks/useDashboard';
+import { useProducts } from '../../shared/hooks/useDashboard';
 
 
 
@@ -35,6 +36,7 @@ export default function Dashboard() {
   const [showAlert, setShowAlert] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { clients, handleClients } = useClients();
+  const { products, handleProducts } = useProducts();
 
   
 
@@ -59,7 +61,7 @@ export default function Dashboard() {
   }
 
   const sections = [
-    { text: 'Gestión de Inventario', icon: <Inventory2OutlinedIcon  /> },
+    { text: 'Gestión de Inventario', icon: <Inventory2OutlinedIcon  onClick={handleProducts}  />, onClick: handleProducts },
     { text: 'Entradas de Productos', icon: <MoveToInboxOutlinedIcon /> },
     { text: 'Salidas de Productos', icon: <OutboxOutlinedIcon /> },
     { text: 'Proveedores y Clientes', icon: <GroupsOutlinedIcon  onClick={handleClients}  />, onClick: handleClients },
