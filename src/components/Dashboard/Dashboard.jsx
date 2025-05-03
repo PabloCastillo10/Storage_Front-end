@@ -11,6 +11,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { logout as logoutHandler } from '../../shared/hooks/useLogout';
 import { useClients } from '../../shared/hooks/useDashboard';
 import { useProducts } from '../../shared/hooks/useDashboard';
+import { useControl } from '../../shared/hooks/useDashboard';
 
 
 
@@ -37,6 +38,7 @@ export default function Dashboard() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { clients, handleClients } = useClients();
   const { products, handleProducts } = useProducts();
+  const { control, handleControl } = useControl();
 
   
 
@@ -62,8 +64,7 @@ export default function Dashboard() {
 
   const sections = [
     { text: 'Gestión de Inventario', icon: <Inventory2OutlinedIcon  onClick={handleProducts}  />, onClick: handleProducts },
-    { text: 'Entradas de Productos', icon: <MoveToInboxOutlinedIcon /> },
-    { text: 'Salidas de Productos', icon: <OutboxOutlinedIcon /> },
+    { text: 'Entradas y Salidas de Productos', icon: <MoveToInboxOutlinedIcon  onClick={handleControl}  />, onClick: handleControl },
     { text: 'Proveedores y Clientes', icon: <GroupsOutlinedIcon  onClick={handleClients}  />, onClick: handleClients },
     { text: 'Informes y Estadísticas', icon: <BarChartOutlinedIcon /> },
     { text: 'Notificaciones y Alertas', icon: <NotificationsActiveOutlinedIcon /> },
