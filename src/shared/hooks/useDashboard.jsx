@@ -31,3 +31,18 @@ export const useProducts = () => {
 
     return { products, handleProducts };
 }
+
+export const useControl = () => {
+    const navigate = useNavigate();
+    const [control, setControl] = useState([]);
+
+    const handleControl = async () => {
+        try {
+            navigate("/control", { state: { message: "Cargando control..." } });
+        } catch (error) {
+            console.error("Error al cargar control:", error);
+        }
+    };
+
+    return { control, handleControl };
+}

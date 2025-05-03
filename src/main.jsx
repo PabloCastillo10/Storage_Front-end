@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import { ToastContainer } from "react-toastify";
 import ProveedoresClientes from "./components/Proveedores y Clientes/ProveedoresClientes";
 import {Products} from "./components/productos/Productos.jsx";
+import Control from "./components/Control/Control.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -33,6 +34,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/clients" element={<ProveedoresClientes />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/control" element={<Control />} />
         </Routes>
       </BrowserRouter>
 
