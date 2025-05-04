@@ -1,25 +1,47 @@
 import { useState } from "react";
-import { postEntrada,postSalida,getMovimientos,putMovimiento, getProductos } from "../../services/api";
+import { postEntrada,postSalida,getMovimientos,putMovimiento, getProductos, getUsers } from "../../services/api";
 
 export const useMovimientos = () =>{
 
     const [movimientos, setMoviemientos] = useState([]);
+    const [productos, setProductos] = useState([]);
+    const [user, setUser] = useState([])
 
     const handlePostEntrada = async (data) => {
         try {
-            await postEntrada(postEntrada);
+            await postEntrada(data);
         } catch (error) {
-            console.error("Error al crear producto:", error.response?.data || error.message);
+            console.error("Error al crear entrada:", error.response?.data || error.message);
         }
     }
 
     const handlePostSalida = async (data) => {
         try {
-            await postEntrada(postEntrada);
+            await postSalida(data);
         } catch (error) {
-            console.error("Error al crear producto:", error.response?.data || error.message);
+            console.error("Error al crear salida:", error.response?.data || error.message);
         }
     }
+    
+    const handleGetUsers = async () => {
+        try {
+            const response = await getUsers();
+            console.log(response)
+            setUser(response.user||[])
+        } catch (error) {
+            console.error("Error al obtener el empleado:", error.response?.data || error.message)
+        }
+    }
+    
+    const handleGetProductos = async () => {
+        try {
+            const res = await getProductos();
+            console.log(res)
+            setProductos(res.productos || []);
+        } catch (error) {   
+            console.error("Error al obtener productos:", error);
+        }
+    };
 
     const handleGetMovimientos = async () => {
         try {
@@ -38,5 +60,6 @@ export const useMovimientos = () =>{
         }
     }
 
-    return {movimientos, handleGetMovimientos, handlePostEntrada, handlePostSalida, handlePutMovimiento};
+
+    return {movimientos,handleGetProductos, handleGetMovimientos, handlePostEntrada, handlePostSalida, handlePutMovimiento};
 }

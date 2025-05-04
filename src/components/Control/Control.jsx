@@ -5,11 +5,21 @@ import { useProductos } from "../../shared/hooks/useProductos";
 import {useMovimientos} from "../../shared/hooks/useMovimientos"
 
 const Control = () => {
-  const navigate = useNavigate();
   const [tab, setTab] = useState(0);
-  const [producto, setProducto] = useState("");
+  const navigate = useNavigate();
+  /* const [producto, setProducto] = useState("");
   const [empleado, setEmpleado] = useState("");
-  const [motivo, setMotivo] = useState("");
+  const [motivo, setMotivo] = useState("");*/
+  const {
+    movimientos,
+    handleGetMovimientos,
+    handlePostEntrada,
+    handlePostSalida,
+    handlePutMovimiento
+  } = useMovimientos();
+  const {
+    handleGetProductos
+  } = useProductos();
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
@@ -100,7 +110,16 @@ const Control = () => {
 
             <TextField fullWidth label="Cantidad retirada" type="number" margin="normal" />
             <TextField fullWidth label="Fecha de salida" type="date" margin="normal" InputLabelProps={{ shrink: true }} />
-
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Empleado encargado</InputLabel>
+              <Select value={empleado} onChange={(e) => setEmpleado(e.target.value)} label="Empleado encargado">
+                {empleados.map((emp) => (
+                  <MenuItem key={emp} value={emp}>
+                    {emp}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <FormControl fullWidth margin="normal">
               <InputLabel>Motivo</InputLabel>
               <Select value={motivo} onChange={(e) => setMotivo(e.target.value)} label="Motivo">

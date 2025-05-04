@@ -216,7 +216,18 @@ export const putMovimiento = async (id, data) => {
     try {
         const response = await apiClient.put(`/movimientos/${id}`, data)
     } catch (e) {
-        
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getUsers = async () => {
+    try {
+        const response = await apiClient.get('/users/')
+        return response.data;
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e);
     }
 }
 
