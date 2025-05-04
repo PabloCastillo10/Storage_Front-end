@@ -5,9 +5,10 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard/Dashboard";
 import { ToastContainer } from "react-toastify";
-import ProveedoresClientes from "./components/Proveedores y Clientes/ProveedoresClientes";
+import ProveedoresClientes from "./components/Proveedores y Clientes/ProveedorClientes.jsx";
 import {Products} from "./components/productos/Productos.jsx";
 import Control from "./components/Control/Control.jsx";
+import Categorias from "./components/Categorias/Categoria.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/clients" element={<ProveedoresClientes />} />
           <Route path="/products" element={<Products />} />
           <Route path="/control" element={<Control />} />
+          <Route path="/categories" element={<Categorias />} />
         </Routes>
       </BrowserRouter>
 

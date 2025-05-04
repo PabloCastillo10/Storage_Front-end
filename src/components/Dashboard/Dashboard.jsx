@@ -8,10 +8,12 @@ import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
+import CategoryIcon from '@mui/icons-material/Category';
 import { logout as logoutHandler } from '../../shared/hooks/useLogout';
 import { useClients } from '../../shared/hooks/useDashboard';
 import { useProducts } from '../../shared/hooks/useDashboard';
 import { useControl } from '../../shared/hooks/useDashboard';
+import { useCategories } from '../../shared/hooks/useDashboard';
 
 
 
@@ -39,6 +41,7 @@ export default function Dashboard() {
   const { clients, handleClients } = useClients();
   const { products, handleProducts } = useProducts();
   const { control, handleControl } = useControl();
+  const { categories, handleCategories } = useCategories();
 
   
 
@@ -68,6 +71,7 @@ export default function Dashboard() {
     { text: 'Proveedores y Clientes', icon: <GroupsOutlinedIcon  onClick={handleClients}  />, onClick: handleClients },
     { text: 'Informes y Estadísticas', icon: <BarChartOutlinedIcon /> },
     { text: 'Notificaciones y Alertas', icon: <NotificationsActiveOutlinedIcon /> },
+    { text: 'Gestión de Categorías', icon: <CategoryIcon  onClick={handleCategories}  />, onClick: handleCategories },
   ];
 
   return (
