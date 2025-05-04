@@ -173,5 +173,3 @@ const checkResponseStatus = (e) => {
         console.error(e);
     }
 };
-
-
