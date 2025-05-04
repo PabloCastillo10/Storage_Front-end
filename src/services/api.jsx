@@ -163,6 +163,26 @@ export const searchCategoriaName = async (name) => {
     }
 }
 
+export const postClientes = async (data) => {
+    try {
+        const response = await apiClient.post('/clientes', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const postProveedores = async (data) => {
+    try {
+        const response = await apiClient.post('/proveedores', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
 const checkResponseStatus = (e) => {
     const responseStatus = e?.response?.status;
 
@@ -173,3 +193,4 @@ const checkResponseStatus = (e) => {
         console.error(e);
     }
 };
+

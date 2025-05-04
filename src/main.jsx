@@ -5,7 +5,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard/Dashboard";
 import { ToastContainer } from "react-toastify";
-import ProveedoresClientes from "./components/Proveedores y Clientes/ProveedorClientes.jsx";
+import ProveedoresClientes from "./components/Proveedores y Clientes/ProveedoresClientes.jsx";
 import {Products} from "./components/productos/Productos.jsx";
 import Control from "./components/Control/Control.jsx";
 import Categorias from "./components/Categorias/Categoria.jsx";
