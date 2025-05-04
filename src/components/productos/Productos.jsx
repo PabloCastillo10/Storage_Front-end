@@ -96,9 +96,11 @@ export const Products = () => {
 
   const handleEdit = (producto) => {
     setForm({
+    
       ...producto,
+      
       categoria: producto.categoria.name || producto.categoria,
-      proveedor: producto.proveedor
+      proveedor: producto.proveedor.name || producto.proveedor,
     });
     setEditId(producto._id, toString(producto.name));
     setEditing(true);
@@ -169,7 +171,7 @@ export const Products = () => {
               <Form.Label>Proveedor</Form.Label>
               <Form.Select name="proveedor" value={form.proveedor} onChange={handleChange} color='white'>
                 <option value="">Selecciona un proveedor</option>
-                {proveedores.map((p) => ( <option key={p._id} value={p._name}>{p.name}</option> ))}
+                { Array.isArray(proveedores) && proveedores.map((p) => ( <option key={p._id} value={p.name}>{p.name}</option> ))}
               </Form.Select>
             </Form.Group>
           </Col>
