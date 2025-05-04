@@ -42,9 +42,96 @@ export const loginUser = async (data) => {
     }
 }
 
+export const postProductos = async (data) => {
+    try {
+        return await apiClient.post('/productos', data);
+    } catch (e) {
+        return {
+            error: true,
+            e: e.message
+        }
+    }
+}
 
+export const deleteProductos = async (id) => {
+    try {
+        const response = await apiClient.delete(`/productos/${id}`)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
 
+export const putProductos = async (id, data) => {
+    try {
+        const response = await apiClient.put(`/productos/${id}`, data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
 
+export const searchProductos = async (query) => {
+    try {
+        const response = await apiClient.get(`/productos/buscar/${query}`)
+        return response.data.productos;
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getProductosById = async (id) => {
+    try {
+        const response = await apiClient.get(`/productos/${id}`)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getCategorias = async () => {
+    try {
+        const response = await apiClient.get('/categorias')
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getProveedores = async () => {
+    try {
+        const response = await apiClient.get('/proveedores')
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const postProveedores = async (data) => {
+    try {
+        const response = await apiClient.post('/proveedores/', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const postClientes = async (data) => {
+    try {
+        const response = await apiClient.post('/clientes/', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
 
 const checkResponseStatus = (e) => {
     const responseStatus = e?.response?.status;
@@ -56,5 +143,3 @@ const checkResponseStatus = (e) => {
         console.error(e);
     }
 };
-
-
