@@ -123,9 +123,43 @@ export const getProveedores = async () => {
     }
 }
 
+export const postEntrada = async (data) => {
+    try {
+        const response = await apiClient.post('/movimientos/entry', data)
+        return response.data;
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e);
+    }
+}
 
+export const postSalida = async (data) => {
+    try {
+        const response = await apiClient.post('/movimientos/entry', data)
+        return response.data;
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e);
+    }
+}
 
+export const getMovimientos = async () => {
+    try {
+        const response = await apiClient.get('/movimientos/')
+        return response.data;
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e);
+    }
+}
 
+export const putMovimiento = async (id, data) => {
+    try {
+        const response = await apiClient.put(`/movimientos/${id}`, data)
+    } catch (e) {
+        
+    }
+}
 
 const checkResponseStatus = (e) => {
     const responseStatus = e?.response?.status;

@@ -1,25 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Container,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
+import {Box,Button,Container,Tab,Tabs,TextField,Typography,Paper,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Select,MenuItem,InputLabel,FormControl,} from "@mui/material";
+import { useProductos } from "../../shared/hooks/useProductos";
+import {useMovimientos} from "../../shared/hooks/useMovimientos"
 
 const Control = () => {
   const navigate = useNavigate();
