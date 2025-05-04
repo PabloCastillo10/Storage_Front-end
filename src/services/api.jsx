@@ -123,6 +123,65 @@ export const getProveedores = async () => {
     }
 }
 
+export const postCategorias = async (data) => {
+    try {
+        const response = await apiClient.post('/categorias', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const putCategorias = async (id, data) => {
+    try {
+        const response = await apiClient.put(`/categorias/${id}`, data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const deleteCategorias = async (id) => {
+    try {
+        const response = await apiClient.delete(`/categorias/${id}`)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const searchCategoriaName = async (name) => {
+    try {
+        const response = await apiClient.get(`/categorias/name/${name}`)
+        return response.data.category;
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const postClientes = async (data) => {
+    try {
+        const response = await apiClient.post('/clientes', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const postProveedores = async (data) => {
+    try {
+        const response = await apiClient.post('/proveedores', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
 export const postEntrada = async (data) => {
     try {
         const response = await apiClient.post('/movimientos/entry', data)
@@ -171,5 +230,4 @@ const checkResponseStatus = (e) => {
         console.error(e);
     }
 };
-
 

@@ -46,3 +46,19 @@ export const useControl = () => {
 
     return { control, handleControl };
 }
+
+export const useCategories = () => {
+    const navigate = useNavigate();
+    const [categories, setCategories] = useState([]);
+
+    const handleCategories = async () => {
+        try {
+            navigate("/categories", { state: { message: "Cargando categorias..." } });
+        } catch (error) {
+            console.error("Error al cargar categorias:", error);
+        }
+    };
+
+    return { categories, handleCategories };
+
+}

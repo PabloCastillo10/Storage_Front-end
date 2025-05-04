@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Button, Form, Row, Col, Alert, Modal, Card, Container } from 'react-bootstrap';
-import { useProductos } from '../../shared/hooks/useProductos'; // asegúrate que estos hooks existen y devuelven todo lo necesario
+import { useProductos } from '../../shared/hooks/useProductos'; 
 import { useNavigate } from 'react-router-dom';
-
+import { validateProductFields, isDuplicateProduct, isProductDisabled } from '../../shared/validations/validationProducts';
 export const Products = () => {
   const navigate = useNavigate();
   const {
@@ -49,10 +49,30 @@ export const Products = () => {
   };
 
   const handleSubmit = async () => {
-    if (!form.name || !form.description || !form.price || !form.stock || !form.proveedor || !form.categoria) {
-      setAlert({ type: 'danger', message: 'Todos los campos son obligatorios' });
+  
+    const fieldError = validateProductFields(form);
+    if (fieldError) {
+      setAlert({ type: 'danger', message: fieldError });
       return;
     }
+  
+   
+    const duplicateError = isDuplicateProduct(form.name, productos, editing ? editId : null);
+    if (duplicateError) {
+      setAlert({ type: 'danger', message: duplicateError });
+      return;
+    }
+  
+   
+    if (editing) {
+      const productoEditando = productos.find(p => p._id === editId);
+      const statusError = isProductDisabled(productoEditando);
+      if (statusError) {
+        setAlert({ type: 'danger', message: statusError });
+        return;
+      }
+    }
+  
     try {
       if (editing) {
         await handlePutProductos(editId, form);
@@ -61,10 +81,13 @@ export const Products = () => {
         await handlePostProductos(form);
         setAlert({ type: 'success', message: 'Producto creado' });
       }
+  
+      
       setForm({ name: '', description: '', price: '', stock: '', proveedor: '', categoria: '', fechaEntrada: '' });
       setEditing(false);
       setEditId(null);
       handleGetProductos();
+  
     } catch (error) {
       const message = error?.response?.data?.msg || error?.message || 'Error al guardar producto';
       setAlert({ type: 'danger', message });
@@ -73,9 +96,11 @@ export const Products = () => {
 
   const handleEdit = (producto) => {
     setForm({
+    
       ...producto,
+      
       categoria: producto.categoria.name || producto.categoria,
-      proveedor: producto.proveedor
+      proveedor: producto.proveedor.name || producto.proveedor,
     });
     setEditId(producto._id, toString(producto.name));
     setEditing(true);
@@ -146,7 +171,7 @@ export const Products = () => {
               <Form.Label>Proveedor</Form.Label>
               <Form.Select name="proveedor" value={form.proveedor} onChange={handleChange} color='white'>
                 <option value="">Selecciona un proveedor</option>
-                {proveedores.map((p) => ( <option key={p.name} value={p._id}>{p.name}</option> ))}
+                { Array.isArray(proveedores) && proveedores.map((p) => ( <option key={p._id} value={p.name}>{p.name}</option> ))}
               </Form.Select>
             </Form.Group>
           </Col>
