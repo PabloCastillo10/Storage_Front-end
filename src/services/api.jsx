@@ -215,15 +215,16 @@ export const getMovimientos = async () => {
 export const putMovimiento = async (id, data) => {
     try {
         const response = await apiClient.put(`/movimientos/${id}`, data)
+        return response.data;
     } catch (e) {
         checkResponseStatus(e)
         return Promise.reject(e)
     }
 }
 
-export const getUsers = async () => {
+export const getUsersByRole = async (role) => {
     try {
-        const response = await apiClient.get('/users/')
+        const response = await apiClient.get(`/users/role/${role}`)
         return response.data;
     } catch (e) {
         checkResponseStatus(e);
