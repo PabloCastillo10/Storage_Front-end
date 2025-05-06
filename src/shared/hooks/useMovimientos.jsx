@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { postEntrada,postSalida,getMovimientos,putMovimiento, getProductos, getUsersByRole } from "../../services/api";
+import { postEntrada,postSalida,getMovimientos,putMovimiento,getProdMovimiento, getUsersByRole } from "../../services/api";
 
 export const useMovimientos = () =>{
 
@@ -8,6 +8,7 @@ export const useMovimientos = () =>{
 
     const handlePostEntrada = async (data) => {
         try {
+            console.log(data)
             await postEntrada(data);
         } catch (error) {
             console.error("Error al crear entrada:", error.response?.data || error.message);
@@ -35,6 +36,18 @@ export const useMovimientos = () =>{
     const handleGetMovimientos = async () => {
         try {
             const response = await getMovimientos();
+            console.log(response)
+            setMovimientos(response.presentacionMovimientos||[])
+        } catch (error) {
+            console.error("Error al crear producto:", error.response?.data || error.message);
+        }
+    }
+
+    const handleGetProdMovimientos = async (id) => {
+        try {
+            const response = await getProdMovimiento(id);
+            console.log(response)
+            setMovimientos(response.presentacionMovimientos||[])
         } catch (error) {
             console.error("Error al crear producto:", error.response?.data || error.message);
         }
@@ -50,5 +63,5 @@ export const useMovimientos = () =>{
     }
 
 
-    return {movimientos, user, handleGetEmployees , handleGetMovimientos, handlePostEntrada, handlePostSalida, handlePutMovimiento};
+    return {movimientos, user, handleGetEmployees , handleGetMovimientos,handleGetProdMovimientos, handlePostEntrada, handlePostSalida, handlePutMovimiento};
 }

@@ -35,6 +35,7 @@ const Control = () => {
     user,
     movimientos,
     handleGetMovimientos,
+    handleGetProdMovimientos,
     handleGetEmployees,
     handlePostEntrada,
     handlePostSalida,
@@ -43,7 +44,7 @@ const Control = () => {
   const { productos, handleGetProductos } = useProductos();
 
   const [form, setForm] = useState({
-    producto: "",
+    productoName: "",
     tipo: "",
     cantidad: "",
     fecha: defaultDate,
@@ -60,7 +61,7 @@ const Control = () => {
   const handleProductoChange = (e) => {
     const selectedProducto = e.target.value; // Obtiene el valor del producto seleccionado (probablemente _id)
     console.log("Producto seleccionado:", selectedProducto); // Verifica que esté tomando el valor correcto
-    setForm({ ...form, producto: selectedProducto }); // Actualiza el estado con el valor del producto seleccionado
+    setForm({ ...form, productoName: selectedProducto }); // Actualiza el estado con el valor del producto seleccionado
     setProducto(selectedProducto); // Actualiza el estado de producto también
   };
 
@@ -68,6 +69,7 @@ const Control = () => {
     handleGetEmployees();
     handleGetMovimientos();
     handleGetProductos();
+    handleGetProdMovimientos();
   }, []);
 
   const handleChange = (event, newValue) => {
@@ -109,19 +111,27 @@ const Control = () => {
             <FormControl fullWidth margin="normal">
               <InputLabel>Producto</InputLabel>
               <Select
-                value={producto}
+                value={form.productoName}
                 onChange={handleProductoChange}
                 label="Producto"
               >
                 {productos.map((prod) => (
-                  <MenuItem key={prod._id} value={prod._id}> {/* Usamos _id como valor */}
+                  <MenuItem key={prod._id} value={prod.name}>
                     {prod.name}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
-            <TextField fullWidth label="Cantidad añadida" type="number" margin="normal" />
+            <TextField
+              fullWidth
+              label="Cantidad añadida"
+              type="number"
+              margin="normal"
+              value={form.cantidad}
+              onChange={(e) => setForm({ ...form, cantidad: e.target.value })}
+            />
+
             <TextField
               fullWidth
               label="Fecha de salida"
@@ -136,9 +146,8 @@ const Control = () => {
               <InputLabel>Empleado encargado</InputLabel>
               <Select value={empleado} onChange={handleEmpleadoChange} label="Empleado encargado">
                 {user.map((emp) => {
-                  console.log(emp); // Verifica que recibas los datos completos de los empleados
-                  return (
-                    <MenuItem key={emp.uid} value={emp.uid}>
+                 return (
+                    <MenuItem key={emp.uid} value={emp.name}>
                       {emp.name} {emp.surname}
                     </MenuItem>
                   );
@@ -152,8 +161,12 @@ const Control = () => {
               sx={{ mt: 2 }}
               onClick={async () => {
                 try {
-                  await handlePostEntrada(form); // Aquí llamas a tu hook para registrar la entrada
-                  // Resetear formulario o hacer algo tras éxito
+                  await handlePostEntrada({
+                    ...form,
+                    tipo: "entrada",
+                    motivo: form.motivo || "N/A",
+                    destino: form.destino || "N/A"
+                  });                  
                 } catch (error) {
                   console.error("Error al registrar la entrada", error);
                 }
@@ -176,24 +189,31 @@ const Control = () => {
             <FormControl fullWidth margin="normal">
               <InputLabel>Producto</InputLabel>
               <Select
-                value={producto}
+                value={form.productoName}
                 onChange={handleProductoChange}
                 label="Producto"
               >
                 {productos.map((prod) => (
-                  <MenuItem key={prod._id} value={prod._id}> {/* Usamos _id como valor */}
+                  <MenuItem key={prod._id} value={prod.name}> 
                     {prod.name}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
-            <TextField fullWidth label="Cantidad retirada" type="number" margin="normal" />
+            <TextField
+              fullWidth
+              label="Cantidad añadida"
+              type="number"
+              margin="normal"
+              value={form.cantidad}
+              onChange={(e) => setForm({ ...form, cantidad: e.target.value })}
+            />
               
-              <TextField
-                fullWidth
-                label="Fecha de entrada"
-                type="date"
+            <TextField
+              fullWidth
+              label="Fecha de entrada"
+              type="date"
               margin="normal"
               InputLabelProps={{ shrink: true }}
               value={form.fecha} // Usamos el estado para el valor
@@ -202,38 +222,42 @@ const Control = () => {
 
             <FormControl fullWidth margin="normal">
               <InputLabel>Empleado encargado</InputLabel>
-              <Select
-                value={empleado}
-                onChange={(e) => setForm({ ...form, empleado: e.target.value })}
-                label="Empleado encargado"
-              >
-                {user.map((emp) => (
-                  <MenuItem key={emp._id} value={emp.uid}>
-                    {emp.name}
-                  </MenuItem>
-                ))}
+              <Select value={empleado} onChange={handleEmpleadoChange} label="Empleado encargado">
+                {user.map((emp) => {
+                  return (
+                    <MenuItem key={emp.uid} value={emp.name}>
+                      {emp.name} {emp.surname}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
 
             <FormControl fullWidth margin="normal">
-              <InputLabel>Motivo</InputLabel>
               <TextField
-                value={motivo}
-                onChange={(e) => setMotivo(e.target.value)}
+                value={form.motivo}
+                onChange={(e) => setForm({ ...form, motivo: e.target.value })}
                 label="Motivo"
                 variant="outlined"
                 fullWidth
               />
             </FormControl>
 
-            <TextField fullWidth label="Destino" margin="normal" />
+            <TextField
+              fullWidth
+              label="Destino"
+              margin="normal"
+              value={form.destino}
+              onChange={(e) => setForm({ ...form, destino: e.target.value })}
+            />
+
             <Button
               variant="contained" 
               color="error"
               sx={{ mt: 2 }}
               onClick={async () => {
                 try {
-                  await handlePostSalida(form); // Aquí llamas a tu hook para registrar la salida
+                  await handlePostSalida({...form, tipo: 'salida'}); // Aquí llamas a tu hook para registrar la salida
                   // Resetear formulario o hacer algo tras éxito
                 } catch (error) {
                   console.error("Error al registrar la salida", error);
@@ -275,11 +299,11 @@ const Control = () => {
                     {movimientos.map((mov) => (
                       <TableRow key={mov._id}>
                         <TableCell>{mov.tipo}</TableCell>
-                        <TableCell>{mov.producto.name}</TableCell>
+                        <TableCell>{mov.producto}</TableCell>
                         <TableCell>{mov.cantidad}</TableCell>
                         <TableCell>{mov.fecha}</TableCell>
                         <TableCell>
-                          {mov.empleado.name} / {mov.motivo}
+                          {mov.empleado} / {mov.motivo}
                         </TableCell>
                         <TableCell>{mov.destino}</TableCell>
                       </TableRow>

@@ -212,6 +212,15 @@ export const getMovimientos = async () => {
     }
 }
 
+export const getProdMovimiento = async (id) => {
+    try {
+        const response = await apiClient.get(`/movimientos/${id}`)
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e)
+    }
+}
+
 export const putMovimiento = async (id, data) => {
     try {
         const response = await apiClient.put(`/movimientos/${id}`, data)
