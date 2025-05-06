@@ -200,6 +200,64 @@ export const postProveedores = async (data) => {
         return Promise.reject(e)
     }
 }
+export const postEntrada = async (data) => {
+    try {
+        const response = await apiClient.post('/movimientos/entry', data)
+        return response.data;
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e);
+    }
+}
+
+export const postSalida = async (data) => {
+    try {
+        const response = await apiClient.post('/movimientos/exit', data)
+        return response.data;
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e);
+    }
+}
+
+export const getMovimientos = async () => {
+    try {
+        const response = await apiClient.get('/movimientos/')
+        return response.data;
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e);
+    }
+}
+
+export const getProdMovimiento = async (id) => {
+    try {
+        const response = await apiClient.get(`/movimientos/${id}`)
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e)
+    }
+}
+
+export const putMovimiento = async (id, data) => {
+    try {
+        const response = await apiClient.put(`/movimientos/${id}`, data)
+        return response.data;
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getUsersByRole = async (role) => {
+    try {
+        const response = await apiClient.get(`/users/role/${role}`)
+        return response.data;
+    } catch (e) {
+        checkResponseStatus(e);
+        return Promise.reject(e);
+    }
+}
 
 export const getQuantityProducts = async () => {
     try {
