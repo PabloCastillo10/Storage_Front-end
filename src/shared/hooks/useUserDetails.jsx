@@ -3,29 +3,22 @@ import {logout as logoutHandler} from "./useLogout";
 
 
 const getUserDetails = () => {
-    const user = localStorage.getItem('user');
-    if (user) { 
-        try {
-        return JSON.parse(user);
-    } catch (error) {
-        console.error("Error parsing user details from localStorage:", error);
-        return null;
-    }
+    const userDetails = localStorage.getItem("user")
+    if(userDetails){
+        return JSON.parse(userDetails)
+    }else{
+        return null
     }
 }
-
-
 export const useUserDetails = () => {
-    const [user, setUser] = useState(getUserDetails());
+    const [userDetails, setUserDetails] = useState(getUserDetails())
     const logout = () => {
-        logoutHandler
-        
+        logoutHandler()
     }
 
-
     return {
-        isLogged: Boolean(user),
-        username: user?.username ? user.username : 'Guest',
+        isLogged: Boolean(userDetails),
+        username: userDetails?.username ? userDetails.username : 'Guest',
         logout
     }
 }

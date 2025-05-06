@@ -5,16 +5,18 @@ import { loginUser  } from "../../services/api";
 export const useLogin = () => {
     const navigate = useNavigate();
     const [loginError, setLoginError] = useState("");
+    const [loginSuccess, setLoginSuccess] = useState("");
 
     const handleLogin = async (data) => {
         try {
             
             const response = await loginUser (data);
-            const userDetails = response.data;
+            const userDetails = response;
 
-        
+            localStorage.setItem('user', JSON.stringify(response.userDetails));
+            console.log("Response from login:", response);
             navigate("/dashboard", { state: { message: "Inicio de sesión exitoso" } });
-            localStorage.setItem('user', JSON.stringify(userDetails));
+            
 
           
         } catch (error) {
@@ -26,6 +28,5 @@ export const useLogin = () => {
             }, 10000);
         }
     }
-
-    return { handleLogin, loginError };
+    return {  handleLogin, loginError, loginSuccess };
 }

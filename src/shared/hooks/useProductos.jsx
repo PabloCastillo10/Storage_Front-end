@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getProductos, postProductos, deleteProductos, putProductos, searchProductos, getProductosById, getCategorias, getProveedores } from "../../services/api";
+import { getProductos, postProductos, deleteProductos, putProductos, searchProductos, getProductosById, getCategorias, getProveedores, getProductosByStock } from "../../services/api";
 
 
 export const useProductos = () => {
@@ -15,6 +15,18 @@ export const useProductos = () => {
             setProductos(res.productos || []);
         } catch (error) {   
             console.error("Error al obtener productos:", error);
+        }
+    };
+
+    const handleGetProductosByStock = async (stock) => {
+        try {
+            const response = await getProductosByStock();
+            setProductos(response);
+            return response;
+            console.log(response)
+        } catch (error) {   
+            console.error("Error al obtener productos por stock:", error);
+            return []
         }
     };
 
@@ -82,6 +94,6 @@ export const useProductos = () => {
         }
     };
 
-    return { productos, handleGetProductos, handlePostProductos, handleDeleteProductos, handlePutProductos, handleSearchProductos, handleGetProductosById, categorias, proveedores, handleGetCategorias, handleGetProveedores };
+    return { productos, handleGetProductos, handlePostProductos, handleDeleteProductos, handlePutProductos, handleSearchProductos, handleGetProductosById, categorias, proveedores, handleGetCategorias, handleGetProveedores, handleGetProductosByStock };
     
 }
