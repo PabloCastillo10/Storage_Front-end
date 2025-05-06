@@ -61,4 +61,51 @@ export const useCategories = () => {
 
     return { categories, handleCategories };
 
+
+}
+
+export const useInformes = () => {
+    const navigate = useNavigate();
+    const [informes, setInformes] = useState([]);
+
+    const handleInformes = async () => {
+        try {
+            navigate("/informes", { state: { message: "Cargando informes..." } });
+        } catch (error) {
+            console.error("Error al cargar informes:", error);
+        }
+    };
+
+    return { informes, handleInformes };
+
+}
+
+export const useMyAccount = () => {
+    const navigate = useNavigate();
+    const [myAccount, setMyAccount] = useState([]);
+
+    const handleMyAccount = async () => {
+        try {
+            navigate("/myAccount ", { state: { message: "Cargando mi cuenta..." } });
+        } catch (error) {
+            console.error("Error al cargar mi cuenta:", error);
+        }
+    };
+
+    return { myAccount, handleMyAccount };
+}
+
+export const usePermisos = () => {
+    const navigate = useNavigate();
+    const [permisos, setPermisos] = useState([]);
+
+    const handlePermisos = async () => {
+        try {
+            navigate("/permisos", { state: { message: "Cargando permisos..." } });
+        } catch (error) {
+            console.error("Error al cargar permisos:", error);
+        }
+    };
+
+    return { permisos, handlePermisos };
 }

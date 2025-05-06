@@ -9,6 +9,9 @@ import ProveedoresClientes from "./components/Proveedores y Clientes/Proveedores
 import {Products} from "./components/productos/Productos.jsx";
 import Control from "./components/Control/Control.jsx";
 import Categorias from "./components/Categorias/Categoria.jsx";
+import Informes from "./components/Informes/Informes.jsx";
+import MyAccountEdit from "./components/MyAccount/MyAccountEdit.jsx";
+import Permisos from "./components/Permisos/Permisos.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -37,6 +40,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/products" element={<Products />} />
           <Route path="/control" element={<Control />} />
           <Route path="/categories" element={<Categorias />} />
+          <Route path="/informes" element={<Informes />} />
+          <Route path="/myAccount" element={<MyAccountEdit />} />
+          <Route path="/permisos" element={<Permisos />} />
         </Routes>
       </BrowserRouter>
 

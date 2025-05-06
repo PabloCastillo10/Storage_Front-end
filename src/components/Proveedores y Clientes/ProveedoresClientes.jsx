@@ -108,7 +108,7 @@ const ProveedoresClientes = () => {
             <div className="mb-3">
               <label className="form-label">Producto</label>
               <select
-                {...registerProveedor("products", productoAsignadoValidation)}
+                {...registerProveedor("products")}
                 className={`form-select ${errorsProveedor.products ? "is-invalid" : ""}`}
               >
                 <option value="">Seleccione un producto</option>

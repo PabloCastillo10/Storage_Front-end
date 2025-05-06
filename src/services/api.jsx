@@ -9,18 +9,26 @@ const apiClient  = axios.create({
 
 apiClient.interceptors.request.use(
     (config) => {
-        const token  = localStorage.getItem('token')
+        const storedUser = localStorage.getItem('user');
 
-        if(token ) {
-            config.headers["x-token"] = token;
+        if (storedUser) {
+            try {
+                const { token } = JSON.parse(storedUser);
+                if (token) {
+                    config.headers["x-token"] = token;
+                }
+            } catch (error) {
+                console.error("Error al parsear el usuario en localStorage:", error);
+            }
         }
 
-        return  config
+        return config;
     },
-    (e) => {
-        return Promise.reject(e)
+    (error) => {
+        return Promise.reject(error);
     }
-)
+);
+
 
 export const registerUser = async (data) => {
     try {
@@ -97,6 +105,16 @@ export const getProductosById = async (id) => {
     try {
         const response = await apiClient.get(`/productos/${id}`)
         return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getProductosByStock = async (data) => {
+    try {
+        const response = await apiClient.get('/productos/stock' , data)
+        return response.data.productos;
     } catch (e) {
         checkResponseStatus(e)
         return Promise.reject(e)
@@ -180,6 +198,99 @@ export const postProveedores = async (data) => {
     } catch (e) {
         checkResponseStatus(e)
         return Promise.reject(e)
+    }
+}
+
+export const getQuantityProducts = async () => {
+    try {
+        const response = await apiClient.get('/informe/')
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getTotalProductStock = async () => {
+    try {
+        const response = await apiClient.get('/informe/totalStock')
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getValueInventory = async () => {
+    try {
+        const response = await apiClient.get('/informe/totalValue')
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getResumenMovimientos = async () => {
+    try {
+        const response = await apiClient.get('/informe/resumen/')
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const getEstadisticasProductos = async () => {
+    try {
+        const response = await apiClient.get('/informe/estadisticas/')
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+
+
+export const putUser = async (data) => {
+    try {
+        const response = await apiClient.put('/users/', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const deleteUser = async (data) => {
+    try {
+        const response = await apiClient.delete('/users/', data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+export const putRole = async (id, data) => {
+    try {
+        const response = await apiClient.put(`/users/role/${id}`, data)
+        return response.data
+    } catch (e) {
+        checkResponseStatus(e)
+        return Promise.reject(e)
+    }
+}
+
+
+
+export const getByRoleUser = async (role) => {
+    try {
+        const response = await apiClient.get(`/users/role/${role}`)
+        return response.data.users
+    } catch (e) {
+        throw new Error(e.response?.data?.error || "Error al obtener usuarios");
     }
 }
 
