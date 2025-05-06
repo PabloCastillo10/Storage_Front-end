@@ -194,7 +194,7 @@ export const postEntrada = async (data) => {
 
 export const postSalida = async (data) => {
     try {
-        const response = await apiClient.post('/movimientos/entry', data)
+        const response = await apiClient.post('/movimientos/exit', data)
         return response.data;
     } catch (e) {
         checkResponseStatus(e);

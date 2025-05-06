@@ -19,15 +19,21 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  Alert,
+  Snackbar
 } from "@mui/material";
 import { useProductos } from "../../shared/hooks/useProductos";
 import { useMovimientos } from "../../shared/hooks/useMovimientos";
+import { validarEntrada,validarSalida } from "../../shared/validations/validationMovimientos";
 
 const Control = () => {
   const today = new Date();
   const defaultDate = today.toISOString().split("T")[0]; // Formatea la fecha en YYYY-MM-DD
   const [tab, setTab] = useState(0);
   const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // o "error"
   const [producto, setProducto] = useState("");
   const [empleado, setEmpleado] = useState("");
   const [motivo, setMotivo] = useState("");
@@ -53,6 +59,20 @@ const Control = () => {
     destino: "",
   });
 
+  const resetForm = () => {
+    setForm({
+      productoName: "",
+      tipo: "",
+      cantidad: "",
+      fecha: defaultDate,
+      empleado: "",
+      motivo: "",
+      destino: "",
+    });
+    setEmpleado("");
+    setProducto("");
+  };
+
   const handleEmpleadoChange = (e) => {
     setEmpleado(e.target.value); // Guarda solo el uid
     setForm({ ...form, empleado: e.target.value });
@@ -65,6 +85,61 @@ const Control = () => {
     setProducto(selectedProducto); // Actualiza el estado de producto también
   };
 
+  const handleSubmitEntrada = async () => {
+    const error = validarEntrada(form, productos);
+    if (error) {
+      setSnackbarMessage(error);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+  
+    try {
+      await handlePostEntrada({
+        ...form,
+        tipo: "entrada",
+      });
+      resetForm();
+      handleGetMovimientos();
+      handleGetProductos();
+      setSnackbarMessage("Entrada registrada correctamente.");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } catch (error) {
+      setSnackbarMessage("Error al registrar la entrada.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSubmitSalida = async () => {
+    const error = validarSalida(form, productos);
+    if (error) {
+      setSnackbarMessage(error);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+  
+    try {
+      await handlePostSalida({
+        ...form,
+        tipo: "salida",
+      });
+      resetForm();
+      handleGetMovimientos();
+      handleGetProductos();
+      setSnackbarMessage("Salida registrada correctamente.");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } catch (error) {
+      setSnackbarMessage("Error al registrar la salida.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+  
+
   useEffect(() => {
     handleGetEmployees();
     handleGetMovimientos();
@@ -74,7 +149,7 @@ const Control = () => {
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
-    setForm({ ...form, [event.target.name]: event.target.value });
+    resetForm();
   };
 
   return (
@@ -129,7 +204,7 @@ const Control = () => {
               type="number"
               margin="normal"
               value={form.cantidad}
-              onChange={(e) => setForm({ ...form, cantidad: e.target.value })}
+              onChange={(e) => setForm({ ...form, cantidad: +e.target.value })}
             />
 
             <TextField
@@ -159,18 +234,7 @@ const Control = () => {
               variant="contained"
               color="success"
               sx={{ mt: 2 }}
-              onClick={async () => {
-                try {
-                  await handlePostEntrada({
-                    ...form,
-                    tipo: "entrada",
-                    motivo: form.motivo || "N/A",
-                    destino: form.destino || "N/A"
-                  });                  
-                } catch (error) {
-                  console.error("Error al registrar la entrada", error);
-                }
-              }}
+              onClick={handleSubmitEntrada}
             >
               Registrar Entrada
             </Button>
@@ -207,7 +271,7 @@ const Control = () => {
               type="number"
               margin="normal"
               value={form.cantidad}
-              onChange={(e) => setForm({ ...form, cantidad: e.target.value })}
+              onChange={(e) => setForm({ ...form, cantidad: +e.target.value })}
             />
               
             <TextField
@@ -251,21 +315,16 @@ const Control = () => {
               onChange={(e) => setForm({ ...form, destino: e.target.value })}
             />
 
-            <Button
+              <Button
               variant="contained" 
               color="error"
               sx={{ mt: 2 }}
-              onClick={async () => {
-                try {
-                  await handlePostSalida({...form, tipo: 'salida'}); // Aquí llamas a tu hook para registrar la salida
-                  // Resetear formulario o hacer algo tras éxito
-                } catch (error) {
-                  console.error("Error al registrar la salida", error);
-                }
-              }}
+              onClick={handleSubmitSalida}
             >
               Registrar Salida
             </Button>
+
+
           </Box>
         )}
 
@@ -315,6 +374,16 @@ const Control = () => {
           </Box>
         )}
       </Paper>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
