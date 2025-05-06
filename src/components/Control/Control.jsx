@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import { useProductos } from "../../shared/hooks/useProductos";
 import { useMovimientos } from "../../shared/hooks/useMovimientos";
-import { validarEntrada,validarSalida } from "../../shared/validations/validationMovimientos";
+import { validarEntrada, validarSalida, validarUpdate } from "../../shared/validations/validationMovimientos";
 
 const Control = () => {
   const today = new Date();
@@ -59,6 +59,8 @@ const Control = () => {
     destino: "",
   });
 
+  const [editingId, setEditingId] = useState(null);
+
   const resetForm = () => {
     setForm({
       productoName: "",
@@ -80,7 +82,6 @@ const Control = () => {
 
   const handleProductoChange = (e) => {
     const selectedProducto = e.target.value; // Obtiene el valor del producto seleccionado (probablemente _id)
-    console.log("Producto seleccionado:", selectedProducto); // Verifica que esté tomando el valor correcto
     setForm({ ...form, productoName: selectedProducto }); // Actualiza el estado con el valor del producto seleccionado
     setProducto(selectedProducto); // Actualiza el estado de producto también
   };
@@ -93,7 +94,6 @@ const Control = () => {
       setSnackbarOpen(true);
       return;
     }
-  
     try {
       await handlePostEntrada({
         ...form,
@@ -120,7 +120,7 @@ const Control = () => {
       setSnackbarOpen(true);
       return;
     }
-  
+
     try {
       await handlePostSalida({
         ...form,
@@ -137,6 +137,56 @@ const Control = () => {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
+  };
+
+  const handleSubmitUpdate = async () => {
+    const error = validarUpdate(form);
+    if (error) {
+      setSnackbarMessage(error);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+  
+    const updatePayload = {
+      cantidad: form.cantidad,
+      tipo: form.tipo,
+      motivo: form.motivo,
+      destino: form.destino,
+    };
+  
+    try {
+      await handlePutMovimiento(editingId, updatePayload);
+      resetForm();
+      handleGetMovimientos();
+      handleGetProductos();
+      setSnackbarMessage("Movimiento actualizado correctamente.");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+      setEditingId(null);
+      setTab(2); // Volver al historial
+    } catch (error) {
+      setSnackbarMessage("Error al actualizar el movimiento.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+  
+  
+  
+
+  const handleEdit = (motion) => {
+    setForm({
+      tipo: motion.tipo,
+      cantidad: motion.cantidad,
+      motivo: motion.motivo,
+      destino: motion.destino,
+      productoName: motion.producto, // Suponiendo que el producto es el nombre o el ID
+      empleado: motion.empleado, // Asignamos el empleado que lo realizó
+      fecha: motion.fecha,
+    });
+    setEditingId(motion._id);  // Usamos _id para la edición
+    setTab(3); // Cambia a la pestaña de edición
   };
   
 
@@ -172,9 +222,8 @@ const Control = () => {
           <Tab label="Entradas" />
           <Tab label="Salidas" />
           <Tab label="Historial" />
+          {editingId && <Tab label="Editar Movimiento" />} {/* Agregamos la pestaña de edición solo si hay un movimiento seleccionado */}
         </Tabs>
-
-        {/* /------------------------------------------------------------------------------------------------/ */}
 
         {/* Entradas */}
         {tab === 0 && (
@@ -183,6 +232,7 @@ const Control = () => {
               Registrar Entrada
             </Typography>
 
+            {/* Campos de Entradas */}
             <FormControl fullWidth margin="normal">
               <InputLabel>Producto</InputLabel>
               <Select
@@ -209,24 +259,22 @@ const Control = () => {
 
             <TextField
               fullWidth
-              label="Fecha de salida"
+              label="Fecha de entrada"
               type="date"
               margin="normal"
               InputLabelProps={{ shrink: true }}
-              value={form.fecha} // Usamos el estado para el valor
-              onChange={(e) => setForm({ ...form, fecha: e.target.value })} // Actualiza la fecha en el estado
+              value={form.fecha}
+              onChange={(e) => setForm({ ...form, fecha: e.target.value })}
             />
 
             <FormControl fullWidth margin="normal">
               <InputLabel>Empleado encargado</InputLabel>
               <Select value={empleado} onChange={handleEmpleadoChange} label="Empleado encargado">
-                {user.map((emp) => {
-                 return (
-                    <MenuItem key={emp.uid} value={emp.name}>
-                      {emp.name} {emp.surname}
-                    </MenuItem>
-                  );
-                })}
+                {user.map((emp) => (
+                  <MenuItem key={emp.uid} value={emp.name}>
+                    {emp.name} {emp.surname}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
@@ -241,8 +289,6 @@ const Control = () => {
           </Box>
         )}
 
-        {/* /------------------------------------------------------------------------------------------------/ */}
-
         {/* Salidas */}
         {tab === 1 && (
           <Box mt={3}>
@@ -250,6 +296,7 @@ const Control = () => {
               Registrar Salida
             </Typography>
 
+            {/* Campos de Salida */}
             <FormControl fullWidth margin="normal">
               <InputLabel>Producto</InputLabel>
               <Select
@@ -258,7 +305,7 @@ const Control = () => {
                 label="Producto"
               >
                 {productos.map((prod) => (
-                  <MenuItem key={prod._id} value={prod.name}> 
+                  <MenuItem key={prod._id} value={prod.name}>
                     {prod.name}
                   </MenuItem>
                 ))}
@@ -267,33 +314,31 @@ const Control = () => {
 
             <TextField
               fullWidth
-              label="Cantidad añadida"
+              label="Cantidad retirada"
               type="number"
               margin="normal"
               value={form.cantidad}
               onChange={(e) => setForm({ ...form, cantidad: +e.target.value })}
             />
-              
+
             <TextField
               fullWidth
-              label="Fecha de entrada"
+              label="Fecha de salida"
               type="date"
               margin="normal"
               InputLabelProps={{ shrink: true }}
-              value={form.fecha} // Usamos el estado para el valor
-              onChange={(e) => setForm({ ...form, fecha: e.target.value })} // Actualiza la fecha en el estado
+              value={form.fecha}
+              onChange={(e) => setForm({ ...form, fecha: e.target.value })}
             />
 
             <FormControl fullWidth margin="normal">
               <InputLabel>Empleado encargado</InputLabel>
               <Select value={empleado} onChange={handleEmpleadoChange} label="Empleado encargado">
-                {user.map((emp) => {
-                  return (
-                    <MenuItem key={emp.uid} value={emp.name}>
-                      {emp.name} {emp.surname}
-                    </MenuItem>
-                  );
-                })}
+                {user.map((emp) => (
+                  <MenuItem key={emp.uid} value={emp.name}>
+                    {emp.name} {emp.surname}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
@@ -315,20 +360,16 @@ const Control = () => {
               onChange={(e) => setForm({ ...form, destino: e.target.value })}
             />
 
-              <Button
-              variant="contained" 
+            <Button
+              variant="contained"
               color="error"
               sx={{ mt: 2 }}
               onClick={handleSubmitSalida}
             >
               Registrar Salida
             </Button>
-
-
           </Box>
         )}
-
-        {/* /------------------------------------------------------------------------------------------------/ */}
 
         {/* Historial */}
         {tab === 2 && (
@@ -352,6 +393,7 @@ const Control = () => {
                       <TableCell sx={{ color: "#fff" }}>Fecha</TableCell>
                       <TableCell sx={{ color: "#fff" }}>Empleado / Motivo</TableCell>
                       <TableCell sx={{ color: "#fff" }}>Destino</TableCell>
+                      <TableCell sx={{ color: "#fff" }}>Acción</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -361,10 +403,17 @@ const Control = () => {
                         <TableCell>{mov.producto}</TableCell>
                         <TableCell>{mov.cantidad}</TableCell>
                         <TableCell>{mov.fecha}</TableCell>
-                        <TableCell>
-                          {mov.empleado} / {mov.motivo}
-                        </TableCell>
+                        <TableCell>{mov.empleado} / {mov.motivo}</TableCell>
                         <TableCell>{mov.destino}</TableCell>
+                        <TableCell>
+                          <Button
+                            onClick={() => handleEdit(mov)}
+                            variant="outlined"
+                            color="primary"
+                          >
+                            Editar
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -373,14 +422,87 @@ const Control = () => {
             )}
           </Box>
         )}
+
+ {/*------------------------------------------------------- Edición de Movimiento----------------------------------------------------------------------*/}
+        {tab === 3 && editingId && (
+          <Box mt={3}>
+            <Typography variant="h6" gutterBottom>
+              Editar Movimiento
+            </Typography>
+
+            {/* Campos de Edición */}
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Tipo de Movimiento</InputLabel>
+              <Select
+                value={form.tipo}
+                onChange={(e) => setForm({ ...form, tipo: e.target.value })}
+                label="Tipo de Movimiento"
+              >
+                <MenuItem value="entrada">Entrada</MenuItem>
+                <MenuItem value="salida">Salida</MenuItem>
+              </Select>
+            </FormControl>
+
+
+            <TextField
+              label="Producto"
+              value={form.productoName}
+              margin="normal"
+              fullWidth
+              disabled
+            />
+
+            <TextField
+              label="Cantidad"
+              type="number"
+              value={form.cantidad}
+              margin="normal"
+              fullWidth
+              onChange={(e) => setForm({ ...form, cantidad: +e.target.value })}
+            />
+
+            <TextField
+              label="Motivo"
+              value={form.motivo}
+              margin="normal"
+              fullWidth
+              onChange={(e) => setForm({ ...form, motivo: e.target.value })}
+              disabled={form.tipo === "entrada"} // 🔒 Deshabilita si es entrada
+            />
+
+            <TextField
+              label="Destino"
+              value={form.destino}
+              margin="normal"
+              fullWidth
+              onChange={(e) => setForm({ ...form, destino: e.target.value })}
+              disabled={form.tipo === "entrada"} // 🔒 Deshabilita si es entrada
+            />
+
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+              onClick={handleSubmitUpdate}
+            >
+              Guardar Cambios
+            </Button>
+          </Box>
+        )}
       </Paper>
+
+      {/* Snackbar de Feedback */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={4000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

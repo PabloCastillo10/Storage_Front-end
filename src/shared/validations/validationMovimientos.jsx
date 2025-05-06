@@ -40,3 +40,27 @@ export const validarEntrada = (formData) => {
     return null;
   };
   
+  export const validarUpdate = (form) => {
+    const { tipo, cantidad, motivo, destino } = form;
+  
+    if (!tipo) {
+      return "El tipo de movimiento es obligatorio.";
+    }
+  
+    if (!cantidad || cantidad <= 0) {
+      return "La cantidad debe ser un número mayor que 0.";
+    }
+  
+    if (tipo !== "entrada") {
+      if (!motivo) {
+        return "El motivo es obligatorio.";
+      }
+  
+      if (!destino) {
+        return "El destino es obligatorio.";
+      }
+    }
+  
+    return null;
+  };
+  
