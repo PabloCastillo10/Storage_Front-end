@@ -166,10 +166,9 @@ const MyAccountEdit = () => {
                 <input
                   type="password"
                   className="form-control"
-                  name="currentPassword"
-                  value={formData.currentPassword}
+                  name="password"
+                  value={formData.password}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
@@ -178,9 +177,10 @@ const MyAccountEdit = () => {
                 <input
                   type="password"
                   className="form-control"
-                  name="password"
-                  value={formData.password}
+                  name="currentPassword"
+                  value={formData.currentPassword}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
