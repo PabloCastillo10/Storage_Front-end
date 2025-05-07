@@ -289,9 +289,9 @@ export const getValueInventory = async () => {
     }
 }
 
-export const getResumenMovimientos = async () => {
+export const getResumenMovimientos = async (tipo, desde, hasta) => {
     try {
-        const response = await apiClient.get('/informe/resumen/')
+        const response = await apiClient.get(`/informe/resumen?tipo=${tipo}&desde=${desde}&hasta=${hasta}`)
         return response.data
     } catch (e) {
         checkResponseStatus(e)
