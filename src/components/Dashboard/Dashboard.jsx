@@ -7,6 +7,7 @@ import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import CategoryIcon from '@mui/icons-material/Category';
 import { logout as logoutHandler } from '../../shared/hooks/useLogout';
@@ -19,6 +20,7 @@ import { useMyAccount } from '../../shared/hooks/useDashboard';
 import { usePermisos } from '../../shared/hooks/useDashboard';
 import { useLogin } from '../../shared/hooks/useLogin';
 import { useProductos } from '../../shared/hooks/useProductos';
+
 
 import {
   AppBar,
@@ -79,9 +81,9 @@ useEffect(() => {
   if (mostrarAlerta) {
     const timer = setTimeout(() => {
       setMostrarAlerta(false);
-    }, 6000); // ⏱️ se oculta en 6 segundos
+    }, 6000); 
 
-    return () => clearTimeout(timer); // Limpieza
+    return () => clearTimeout(timer);
   }
 }, [mostrarAlerta]);
   const toggleDrawer = () => {
@@ -110,7 +112,9 @@ useEffect(() => {
   ]
   return (
 
-    <Box sx={{ flexGrow: 1 }}>
+   
+
+    <Box className="overlay" sx={{ flexGrow: 1}}>
       <AppBar position="static">
         <Toolbar>
           <IconButton edge="start" color="inherit" onClick={toggleDrawer} sx={{ mr: 2 }}>
@@ -122,7 +126,7 @@ useEffect(() => {
           <Button color="inherit" onClick={handleLogout}>
             Cerrar sesión
           </Button>
-          <Button color="inherit" onClick={handleMyAccount}>
+          <Button color="inherit" onClick={handleMyAccount} startIcon={<AccountCircleIcon />}>
             Mi cuenta
           </Button>
           {user?.role === 'ADMIN' && (
@@ -179,10 +183,10 @@ useEffect(() => {
       </Drawer>
       <Box sx={{ padding: 3 }}>
         <Typography variant="h4" gutterBottom>
-          Bienvenido al Dashboard
+         Almacenadora
         </Typography>
         <Typography variant="body1">
-          HOLA
+          
         </Typography>
       </Box>
       {showAlert && (
