@@ -5,7 +5,7 @@ import { logout } from "../shared/hooks/useLogout";
 const apiClient  = axios.create({
     baseURL: 'https://storagebackend-production.up.railway.app/almacenadora',
     timeout: 5000
-})Despliegue
+})
 
 apiClient.interceptors.request.use(
     (config) => {
